@@ -1,41 +1,66 @@
 import { KeyboardEvent, useState, useEffect, useCallback } from 'react'
 import { DrugItem } from '../type'
-import { useSearchDrugs } from '../apis'
+import { useSearchDrugs, useSpellingSuggestions } from '../apis'
 import { useNavigate } from 'react-router-dom'
 
 export const SearchPage = () => {
-  const [items, setItems] = useState<DrugItem[]>([])
-  const { searchDrugs, data } = useSearchDrugs()
+  const [drugItems, setDrugItems] = useState<DrugItem[]>([])
+  const [suggestionItems, setSuggestionItems] = useState<string[]>([])
+  const [searchValue, setSearchValue] = useState('')
+  const [showNotFoundError, setShowNotFoundError] = useState(false)
+  const { searchDrugs, data: searchData } = useSearchDrugs()
+  const { spellingSuggestions, data: spellingData } = useSpellingSuggestions()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!!data && data.length > 0) {
-      setItems(data)
+    if (!!searchData && searchData.length > 0) {
+      setSuggestionItems([])
+      setDrugItems(searchData)
+    } else if (searchValue !== '') {
+      setDrugItems([])
+      spellingSuggestions(searchValue)
     } else {
-      setItems([{
-        rxcui: 'test',
-        name: 'test',
-        synonym: 'test'
-      }])
-      // TODO: Move api call to hook probably
-      // const response = await fetch('https://rxnav.nlm.nih.gov/REST/spellingsuggestions.json?name=ambienn')
+      setDrugItems([])
+      setSuggestionItems([])
     }
-  }, [data])
+  }, [searchData])
 
-  const handleKeyDown = useCallback(async (event: KeyboardEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (!!spellingData && spellingData.length > 0) {
+      setSuggestionItems(spellingData)
+    } else {
+      setSuggestionItems([])
+      setShowNotFoundError(true)
+    }
+  }, [spellingData])
+
+  const handleKeyDown = useCallback((event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      searchDrugs(event.currentTarget.value)
+      onSearch(searchValue)
     }
   }, [])
 
-  const onItemClick = (item: DrugItem) => {
+  const onSearch = (searchValue: string) => {
+    setShowNotFoundError(false)
+    searchDrugs(searchValue)
+    setSearchValue(searchValue || '')
+  }
+
+  const onDrugItemClick = (item: DrugItem) => {
     navigate(`/drugs/${item.rxcui}`, { state: { drug: item } })
+  }
+
+  const onSuggestionItemClick = (suggestion: string) => {
+    onSearch(suggestion)
+    setSearchValue(suggestion)
   }
 
   return <div>
     Search for drugs!
-    <input onKeyDown={handleKeyDown} type={'search'} placeholder={'Search...'} />
-    <button><i className="fa fa-search" /></button>
-    {items.map((item, index) => <div key={index} onClick={() => onItemClick(item)}>{item.name}</div>)}
+    <input onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} value={searchValue} type={'search'} placeholder={'Search...'} />
+    <button onClick={() => onSearch(searchValue)}><i className="fa fa-search" /></button>
+    {drugItems.length > 0 && drugItems.map((item, index) => <div key={index} onClick={() => onDrugItemClick(item)}>{item.name}</div>)}
+    {suggestionItems.length > 0 && suggestionItems.map((item, index) => <div key={index} onClick={() => onSuggestionItemClick(item)}>{item}</div>)}
+    {showNotFoundError && <div>Error Message Goes Here</div>}
   </div>
 }

@@ -1,4 +1,4 @@
-import { DrugItem, DrugsResponse } from "../type";
+import { DrugItem, DrugsResponse, SpellingSuggestionsResponse } from "../type";
 
 export const mutateDrugSearchResult = (data: DrugsResponse): DrugItem[] => {
   const items: DrugItem[] = [];
@@ -14,6 +14,17 @@ export const mutateDrugSearchResult = (data: DrugsResponse): DrugItem[] => {
         });
       }
     });
+  }
+
+  return items;
+};
+
+export const mutateSpellingSuggestionResult = (
+  data: SpellingSuggestionsResponse
+): string[] => {
+  let items: string[] = [];
+  if (!!data && data.suggestionGroup?.suggestionList?.suggestion) {
+    items = data.suggestionGroup?.suggestionList?.suggestion;
   }
 
   return items;

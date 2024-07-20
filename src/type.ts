@@ -1,4 +1,3 @@
-// TODO: Improve
 export type DrugsResponse = {
   drugGroup: {
     conceptGroup: {
@@ -13,6 +12,15 @@ export type DrugsResponse = {
         umlscui: string;
       }[];
     }[];
+  };
+};
+
+export type SpellingSuggestionsResponse = {
+  suggestionGroup: {
+    name: string | null;
+    suggestionList: {
+      suggestion?: string[];
+    };
   };
 };
 
