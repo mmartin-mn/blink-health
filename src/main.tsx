@@ -4,6 +4,7 @@ import {
   RouterProvider,
   Navigate
 } from "react-router-dom"
+import { SearchPage } from './search'
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
           },
           {
             path: "search",
-            element: <div>Search</div>,
+            element: <SearchPage />,
             index: true
           },
           {
