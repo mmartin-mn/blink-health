@@ -3,8 +3,7 @@ import {
   createBrowserRouter,
   RouterProvider,
   Navigate
-} from "react-router-dom";
-import App from './App.tsx'
+} from "react-router-dom"
 import './index.css'
 
 const router = createBrowserRouter([
