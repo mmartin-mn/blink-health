@@ -1,25 +1,14 @@
 import { KeyboardEvent, useState, useEffect, useCallback } from 'react'
-import { DrugsResponse, DrugItem } from '../type'
+import { DrugItem } from '../type'
+import { useSearchDrugs } from '../apis'
 
 export const SearchPage = () => {
-  const [searchResult, setSearchResult] = useState<DrugsResponse>()
   const [items, setItems] = useState<DrugItem[]>([])
+  const { searchDrugs, data } = useSearchDrugs()
 
   useEffect(() => {
-    if (!!searchResult && searchResult.drugGroup?.conceptGroup?.length > 0) {
-      let newItems: DrugItem[] = []
-      searchResult.drugGroup.conceptGroup.forEach((group) => {
-        if (!!group.conceptProperties) {
-          group.conceptProperties.forEach((concept) => {
-            newItems.push({
-              rxcui: concept.rxcui,
-              name: concept.name,
-              synonym: concept.synonym
-            })
-          })
-        }
-      })
-      setItems(newItems)
+    if (!!data && data.length > 0) {
+      setItems(data)
     } else {
       setItems([{
         rxcui: 'test',
@@ -29,15 +18,11 @@ export const SearchPage = () => {
       // TODO: Move api call to hook probably
       // const response = await fetch('https://rxnav.nlm.nih.gov/REST/spellingsuggestions.json?name=ambienn')
     }
-  }, [searchResult])
+  }, [data])
 
   const handleKeyDown = useCallback(async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      // TODO: Move api call to hook probably
-      const response = await fetch(`https://rxnav.nlm.nih.gov/REST/drugs.json?name=${event.currentTarget.value}`)
-      const json = await response.json()
-
-      setSearchResult(json)
+      searchDrugs(event.currentTarget.value)
     }
   }, [])
 
@@ -46,6 +31,6 @@ export const SearchPage = () => {
     Search for drugs!
     <input onKeyDown={handleKeyDown} type={'search'} placeholder={'Search...'} />
     <button><i className="fa fa-search" /></button>
-    {items.map((item) => <div>{item.name}</div>)}
+    {items.map((item, index) => <div key={index}>{item.name}</div>)}
   </div>
 }
