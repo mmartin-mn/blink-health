@@ -26,7 +26,7 @@ export const useSearchDrugs = () => {
 };
 
 export const useSpellingSuggestions = () => {
-  const [data, setData] = useState<string[]>([]);
+  const [data, setData] = useState<string[]>();
   const spellingSuggestions = async (searchValue: string) => {
     if (!searchValue) {
       setData([]);

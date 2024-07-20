@@ -2,6 +2,7 @@ import { KeyboardEvent, useState, useEffect, useCallback } from 'react'
 import { DrugItem } from '../type'
 import { useSearchDrugs, useSpellingSuggestions } from '../apis'
 import { useNavigate } from 'react-router-dom'
+import { SearchInput, SearchButton, SearchInputContainer, ListItem, PageContainer, ListContainer, FlexContainer } from './styled-components'
 
 export const SearchPage = () => {
   const [drugItems, setDrugItems] = useState<DrugItem[]>([])
@@ -30,7 +31,10 @@ export const SearchPage = () => {
       setSuggestionItems(spellingData)
     } else {
       setSuggestionItems([])
-      setShowNotFoundError(true)
+
+      if (!!spellingData) {
+        setShowNotFoundError(true)
+      }
     }
   }, [spellingData])
 
@@ -38,7 +42,7 @@ export const SearchPage = () => {
     if (event.key === 'Enter') {
       onSearch(searchValue)
     }
-  }, [])
+  }, [searchValue])
 
   const onSearch = (searchValue: string) => {
     setShowNotFoundError(false)
@@ -55,12 +59,21 @@ export const SearchPage = () => {
     setSearchValue(suggestion)
   }
 
-  return <div>
-    Search for drugs!
-    <input onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} value={searchValue} type={'search'} placeholder={'Search...'} />
-    <button onClick={() => onSearch(searchValue)}><i className="fa fa-search" /></button>
-    {drugItems.length > 0 && drugItems.map((item, index) => <div key={index} onClick={() => onDrugItemClick(item)}>{item.name}</div>)}
-    {suggestionItems.length > 0 && suggestionItems.map((item, index) => <div key={index} onClick={() => onSuggestionItemClick(item)}>{item}</div>)}
+  return <PageContainer>
+    <SearchInputContainer>
+      <h2>Search for drugs!</h2>
+      <FlexContainer>
+        <SearchInput onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} value={searchValue} type={'search'} placeholder={'Search...'} />
+        <SearchButton onClick={() => onSearch(searchValue)}><i className="fa fa-search" /></SearchButton>
+      </FlexContainer>
+    </SearchInputContainer>
+
+    <ListContainer>
+      {drugItems.length > 0 && drugItems.map((item, index) => <ListItem key={index} onClick={() => onDrugItemClick(item)} title={item.name}>{item.name}</ListItem>)}
+    </ListContainer>
+    <ListContainer>
+      {suggestionItems.length > 0 && suggestionItems.map((item, index) => <ListItem key={index} onClick={() => onSuggestionItemClick(item)} title={item}>{item}</ListItem>)}
+    </ListContainer>
     {showNotFoundError && <div>Error Message Goes Here</div>}
-  </div>
+  </PageContainer>
 }
