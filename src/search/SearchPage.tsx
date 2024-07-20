@@ -1,10 +1,12 @@
 import { KeyboardEvent, useState, useEffect, useCallback } from 'react'
 import { DrugItem } from '../type'
 import { useSearchDrugs } from '../apis'
+import { useNavigate } from 'react-router-dom'
 
 export const SearchPage = () => {
   const [items, setItems] = useState<DrugItem[]>([])
   const { searchDrugs, data } = useSearchDrugs()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!!data && data.length > 0) {
@@ -26,11 +28,14 @@ export const SearchPage = () => {
     }
   }, [])
 
+  const onItemClick = (item: DrugItem) => {
+    navigate(`/drugs/${item.rxcui}`, { state: { drug: item } })
+  }
 
   return <div>
     Search for drugs!
     <input onKeyDown={handleKeyDown} type={'search'} placeholder={'Search...'} />
     <button><i className="fa fa-search" /></button>
-    {items.map((item, index) => <div key={index}>{item.name}</div>)}
+    {items.map((item, index) => <div key={index} onClick={() => onItemClick(item)}>{item.name}</div>)}
   </div>
 }
