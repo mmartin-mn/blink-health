@@ -59,8 +59,6 @@ export const ListItem = styled.a`
   }
 `;
 
-export const PageContainer = styled.div`
-  max-width: 750px;
-  margin: auto;
-  margin-top: 50px;
+export const NoResultsError = styled.h3`
+  text-align: center;
 `;

@@ -2,7 +2,8 @@ import { KeyboardEvent, useState, useEffect, useCallback } from 'react'
 import { DrugItem } from '../type'
 import { useSearchDrugs, useSpellingSuggestions } from '../apis'
 import { useNavigate } from 'react-router-dom'
-import { SearchInput, SearchButton, SearchInputContainer, ListItem, PageContainer, ListContainer, FlexContainer } from './styled-components'
+import { SearchInput, SearchButton, SearchInputContainer, ListItem, ListContainer, FlexContainer, NoResultsError } from './styles'
+import { PageContainer } from '../styles'
 
 export const SearchPage = () => {
   const [drugItems, setDrugItems] = useState<DrugItem[]>([])
@@ -70,10 +71,8 @@ export const SearchPage = () => {
 
     <ListContainer>
       {drugItems.length > 0 && drugItems.map((item, index) => <ListItem key={index} onClick={() => onDrugItemClick(item)} title={item.name}>{item.name}</ListItem>)}
-    </ListContainer>
-    <ListContainer>
       {suggestionItems.length > 0 && suggestionItems.map((item, index) => <ListItem key={index} onClick={() => onSuggestionItemClick(item)} title={item}>{item}</ListItem>)}
     </ListContainer>
-    {showNotFoundError && <div>Error Message Goes Here</div>}
+    {showNotFoundError && <NoResultsError>Sorry, no results found.</NoResultsError>}
   </PageContainer>
 }

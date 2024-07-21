@@ -24,6 +24,15 @@ export type SpellingSuggestionsResponse = {
   };
 };
 
+export type GetNDCsResponse = {
+  ndcGroup: {
+    rxcui: string;
+    ndcList: {
+      ndc: string[];
+    };
+  };
+};
+
 export type DrugItem = {
   rxcui: string;
   name: string;
