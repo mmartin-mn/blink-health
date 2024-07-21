@@ -24,7 +24,7 @@ export const Header = () => {
   return <HeaderContainer>
     <NavContainer>
       <TransparentButton onClick={onHomeClick}>
-        <h2>Blink Takehome</h2>
+        <h2>Home</h2>
       </TransparentButton>
     </NavContainer>
     <TransparentButton>

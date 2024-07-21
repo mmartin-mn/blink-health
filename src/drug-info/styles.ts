@@ -17,3 +17,9 @@ export const Text = styled.p`
   margin-top: 5px;
   margin-bottom: 0;
 `;
+
+export const LoadingContainer = styled.div`
+  display: flex;
+  align-self: center;
+  margin-top: 80px;
+`;

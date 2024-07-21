@@ -4,14 +4,15 @@ import { useSearchDrugs, useSpellingSuggestions } from '../apis'
 import { useNavigate } from 'react-router-dom'
 import { SearchInput, SearchButton, SearchInputContainer, ListItem, ListContainer, FlexContainer, NoResultsError } from './styles'
 import { PageContainer } from '../styles'
+import { Loadingindicator } from '../shared/LoadingIndicator'
 
 export const SearchPage = () => {
   const [drugItems, setDrugItems] = useState<DrugItem[]>([])
   const [suggestionItems, setSuggestionItems] = useState<string[]>([])
   const [searchValue, setSearchValue] = useState('')
   const [showNotFoundError, setShowNotFoundError] = useState(false)
-  const { searchDrugs, data: searchData } = useSearchDrugs()
-  const { spellingSuggestions, data: spellingData } = useSpellingSuggestions()
+  const { searchDrugs, data: searchData, loading: searchLoading } = useSearchDrugs()
+  const { spellingSuggestions, data: spellingData, loading: spellingLoading } = useSpellingSuggestions()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -65,7 +66,11 @@ export const SearchPage = () => {
       <h2>Search for drugs!</h2>
       <FlexContainer>
         <SearchInput onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} value={searchValue} type={'search'} placeholder={'Search...'} />
-        <SearchButton onClick={() => onSearch(searchValue)}><i className="fa fa-search" /></SearchButton>
+        <SearchButton onClick={() => onSearch(searchValue)}>
+          {searchLoading || spellingLoading ? 
+            <Loadingindicator size={'small'} /> : <i className="fa fa-search" />
+          }
+        </SearchButton>
       </FlexContainer>
     </SearchInputContainer>
 
