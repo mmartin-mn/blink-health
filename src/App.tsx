@@ -1,14 +1,24 @@
 import {
   createBrowserRouter,
   RouterProvider,
-  Navigate
+  Navigate,
+  Outlet
 } from "react-router-dom"
 import { SearchPage } from './search'
-import { DrugInfoPage } from "./drug-info/DrugInfoPage"
+import { DrugInfoPage } from "./drug-info"
+import { Header } from "./header"
+
+const Layout = () => {
+  return <>
+    <Header />
+    <Outlet />
+  </>
+}
 
 const router = createBrowserRouter([
   {
     path: '/',
+    element: <Layout />,
     children: [
       {
         index: true,
@@ -38,5 +48,7 @@ const router = createBrowserRouter([
 
 
 export const App = () => {
-  return <RouterProvider router={router} />
+  return <>
+    <RouterProvider router={router} />
+  </>
 }
